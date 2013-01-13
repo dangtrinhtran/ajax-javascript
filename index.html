@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ajax form</title>
+<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+<script type='text/javascript' src='ajax.js'></script>
+</head>
+<body>
+<form onsubmit='return false'>
+	Input Text: <input type='text' id='text'/><br/> <br />
+	<input type='submit' value='OK HTML' onclick='getDataHTML()'/>
+    <input type='submit' value='OK XML' onclick='getDataXML()'/>
+    <input type='submit' value='OK JSON' onclick='getDataJSON()'/>
+</form>
+<div id='result'></div>
+</body>
+</html>

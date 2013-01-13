@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+	.clear { clear:both;}
+	body { font-family:Tahoma, Geneva, sans-serif; font-size:12px;}
+	div#container { position:relative; margin:0px 50px; width:900px;}
+	div#content { background:#ff6; padding:10px; min-height:150px;}
+	div#content p#username { float:left; background:#0cc; line-height:20px; padding:5px;}
+	div#content p#username input { margin-left:20px; border:1px dotted #000; background:transparent;}
+	div#content p#alert { float:left; line-height:20px; padding:5px 5px 5px 20px; color:#f00; font-style:italic; display:none;}
+
+</style>
+<script type="text/javascript">
+	function setnull(){
+		document.getElementById("user_name").value = "";	
+	}
+	
+	function createXMLHttp(){
+		if(typeof XMLHttpRequest != "undefined"){
+			return new XMLHttpRequest();
+		}else if(window.ActiveXObject){
+			var aVersions = ["MSXML2.XMLHttp.5.0",
+        "MSXML2.XMLHttp.4.0","MSXML2.XMLHttp.3.0",
+        "MSXML2.XMLHttp","Microsoft.XMLHttp"];
+			
+			for(var i = 0; i < aVersions.length; i++){
+				try{
+					var oXMLHttp = new ActiveXObject(aVersions[i]);
+					return oXMLHttp;
+				}catch(oError){
+					//Do nothing
+				}
+			}
+		}
+		
+		throw new Error("XMLHttp object could be created.");
+	}
+	
+	function send_info() {
+		var sInfo = document.getElementById("user_name").value;
+		var oXmlHttp = createXMLHttp();
+		oXmlHttp.open("get","process_ajax1.php?user=" + sInfo,true);
+		oXmlHttp.onreadystatechange = function (){
+			if(oXmlHttp.readyState == 4){
+				if(oXmlHttp.status == 200){
+					if(sInfo ==""){
+						document.getElementById("username").style.background = "red";
+						document.getElementById("content").style.color = "white";
+						document.getElementById("user_name").style.color = "white";
+						document.getElementById("user_name").style.borderColor = "white";
+						document.getElementById("alert").style.display = "block";
+						document.getElementById("alert").innerHTML = "Bạn không được phép để trống trường này.";
+					}else if(sInfo.length <5){
+						document.getElementById("username").style.background = "red";
+						document.getElementById("content").style.color = "white";
+						document.getElementById("user_name").style.color = "white";
+						document.getElementById("user_name").style.borderColor = "white";
+						document.getElementById("alert").style.display = "block";
+						document.getElementById("alert").innerHTML = "Username phải có ít nhất 5 ký tự.";
+					}else{
+						document.getElementById("alert").style.display = "block";
+						document.getElementById("alert").innerHTML = oXmlHttp.responseText;
+						if(oXmlHttp.responseText == "Username đã có người sử dụng, bạn vui lòng chọn một Username khác."){
+							document.getElementById("username").style.background = "red";
+							document.getElementById("content").style.color = "white";
+							document.getElementById("user_name").style.color = "white";
+							document.getElementById("user_name").style.borderColor = "white";	
+						}else{
+							document.getElementById("username").style.background = "#0cc";
+							document.getElementById("content").style.color = "black";
+							document.getElementById("user_name").style.color = "black";
+							document.getElementById("user_name").style.borderColor = "black";		
+						}
+					}
+				}else{
+					alert(oXmlHttp.statusText);
+				}
+			}
+		};
+		oXmlHttp.send(null);
+		
+	}
+</script>
+</head>
+
+<body onload="setnull();">
+
+	<div id="container">
+    	<form name="register" method="post" action="process_info.php">
+        	<h2>ĐĂNG KÝ THÀNH VIÊN</h2>
+            <div id="content">
+            	<p id="username">
+                	Username : <input type="text" value="" id="user_name" onkeyup="send_info();" />
+                </p>
+                <p id="alert">&nbsp;</p>
+                <div class="clear"></div><!-- End .clear -->
+            </div><!-- End #content -->
+            <p id="submit">
+            	<input name="submit_f" type="submit" value="Đăng ký" />
+            </p>
+        </form>
+    </div><!-- End #container -->
+	
+</body>
+</html>
